@@ -1,47 +1,25 @@
-/*
-masonry layout
-masonry item
-media queries
-*/
-
-.app-layout {
-  padding: 10px;
+.masonry-grid {
+  display: flex;
+  gap: 16px;
+  margin: 16px;
 }
 
-.masonry-layout {
-  column-gap: 1em;
+.masonry-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.masonry-item {
-  break-inside: avoid;
-  margin-bottom: 1em;
-  background-color: lightgrey;
-  border: 1px solid lightblue;
-  border-radius: 20px;
-  padding: 15px;
-  box-sizing: border-box;
+.photo-card {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-@media (min-width: 576px) {
-  .masonry-layout {
-    column-count: 2;
-  }
-}
-
-@media (min-width: 768px) {
-  .masonry-layout {
-    column-count: 4;
-  }
-}
-
-@media (min-width: 992px) {
-  .masonry-layout {
-    column-count: 6;
-  }
-}
-
-@media (min-width: 1200) {
-  .masonry-layout {
-    column-count: 8;
-  }
+.photo-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
 }

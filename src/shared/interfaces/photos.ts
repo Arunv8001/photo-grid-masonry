@@ -1,4 +1,4 @@
-export interface PexelsPhoto {
+export interface PhotoCardProps {
     id: number;
     width: number;
     height: number;
@@ -24,7 +24,21 @@ export interface PexelsPhoto {
 export interface PexelsResponse {
     page: number;
     per_page: number;
-    photos: PexelsPhoto[];
+    photos: PhotoCardProps[];
     total_results: number;
     next_page: string;
 }
+
+// export interface PhotoCardProps {
+//   photo: {
+//     src: { original: string;
+//         large2x: string;
+//         large: string;
+//         medium: string;
+//         small: string;
+//         portrait: string;
+//         landscape: string;
+//         tiny: string; };
+//     photographer: string;
+//   };
+// }

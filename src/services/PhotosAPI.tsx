@@ -5,8 +5,8 @@ const sendRequest = async (url: string, options: RequestInit) => {
   return await response.json();
 } 
 
-const fetchPhotos = async () => {
-  return await sendRequest(BASE_URL_OF_PEXEL+"query=nature&per_page=20", {
+const fetchPhotos = async (page: number) => {
+  return await sendRequest(BASE_URL_OF_PEXEL+`?page=${page}&per_page=30`, {
     headers: {
       'Content-type': 'application/json',
       'Authorization': AUTH_KEY
