@@ -1,42 +1,47 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/*
+masonry layout
+masonry item
+media queries
+*/
+
+.app-layout {
+  padding: 10px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.masonry-layout {
+  column-gap: 1em;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1em;
+  background-color: lightgrey;
+  border: 1px solid lightblue;
+  border-radius: 20px;
+  padding: 15px;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (min-width: 576px) {
+  .masonry-layout {
+    column-count: 2;
   }
 }
 
-.card {
-  padding: 2em;
+@media (min-width: 768px) {
+  .masonry-layout {
+    column-count: 4;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+@media (min-width: 992px) {
+  .masonry-layout {
+    column-count: 6;
+  }
+}
+
+@media (min-width: 1200) {
+  .masonry-layout {
+    column-count: 8;
+  }
 }

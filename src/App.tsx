@@ -1,34 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import MasonryLayout from './components/Masonrylayout'
+import fetchPhotos from './services/PhotosAPI';
+import { PexelsPhoto } from './shared/interfaces/photos';
 
 function App() {
-  const [count, setCount] = useState(0)
+const [photos, setPhotos] = useState<PexelsPhoto[]>([])
+const [errorMsg, setErrorMsg] = useState<null | string>(null);
+const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchPhotos();
+        setPhotos(data.photos);
+        setErrorMsg(null);
+      } catch (error) {
+        if(error instanceof Error) {
+          setErrorMsg(error.message);
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData();
+  },[])
+
+  if(isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if(errorMsg) {
+    return <div>Error: {errorMsg}</div>
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='app-layout'>
+      <MasonryLayout items={photos} />
+    </div>
   )
 }
 
