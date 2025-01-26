@@ -28,17 +28,3 @@ export interface PexelsResponse {
     total_results: number;
     next_page: string;
 }
-
-// export interface PhotoCardProps {
-//   photo: {
-//     src: { original: string;
-//         large2x: string;
-//         large: string;
-//         medium: string;
-//         small: string;
-//         portrait: string;
-//         landscape: string;
-//         tiny: string; };
-//     photographer: string;
-//   };
-// }

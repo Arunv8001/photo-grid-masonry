@@ -1,12 +1,16 @@
 import "./App.css";
-import MasonryLayout from "./components/Masonrylayout";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Photolist from "./components/Photolist";
+import PhotoDetail from "./components/PhotoDetail";
 
 function App() {
   return (
-    <div className="app-layout">
-      <h1 style={{ textAlign: "center" }}>Virtualized Masonry Grid</h1>
-      <MasonryLayout />
-    </div>
+    <Router>
+    <Routes>
+      <Route path="/" element={<Photolist />} />
+      <Route path="/photo/:id" element={<PhotoDetail />} />
+    </Routes>
+  </Router>
   );
 }
 
