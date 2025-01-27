@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { PhotoCardProps } from "../shared/interfaces/photos";
-import { fetchPhoto } from "../services/PhotosAPI";
-import Loading from "./Loading";
+import { PhotoCardProps } from "../../shared/interfaces/photos";
+import { fetchPhoto } from "../../services/PhotosAPI";
+import Loading from "../common/loading/Loading";
+import "./PhotoDetail.css"
 
 const PhotoDetail = () => {
   const { id } = useParams<{ id: string }>();

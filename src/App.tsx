@@ -1,7 +1,8 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Photolist from "./components/Photolist";
-import PhotoDetail from "./components/PhotoDetail";
+import React from "react";
+const PhotoDetail = React.lazy(() => import('./components/PhotDetail/PhotoDetail'));
+const Photolist = React.lazy(() => import('./components/Photolist/Photolist'));
 
 function App() {
   return (
