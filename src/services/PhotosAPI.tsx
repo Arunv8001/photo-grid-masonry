@@ -6,7 +6,7 @@ const sendRequest = async (url: string, options: RequestInit) => {
 } 
 
 export const fetchImages = async (query: string = 'random', page: number) => {
-  return await sendRequest(BASE_URL_OF_PEXEL+`/search?query=${query === "" ? "random" : query}&page=${page}&per_page=30`, {
+  return await sendRequest(BASE_URL_OF_PEXEL+`/search?query=${query === "" ? "random" : query}&page=${page}&per_page=15`, {
     headers: {
       'Content-type': 'application/json',
       'Authorization': API_KEY

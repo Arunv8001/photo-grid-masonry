@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { PhotoCardProps } from "../shared/interfaces/photos";
 import { fetchPhoto } from "../services/PhotosAPI";
+import Loading from "./Loading";
 
 const PhotoDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,28 +19,30 @@ const PhotoDetail = () => {
         }
       }
     };
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     getPhoto();
   }, [id]);
 
   if (!photo) {
-    return <p>Loading photo details...</p>;
+    return <Loading />;
   }
 
   return (
     <div className="photo-detail">
-      <Link className="back-button" to={"/"}>Back to Gallery</Link>
+      <Link className="back-button" to={"/"}>
+        Back to Gallery
+      </Link>
       <div className="photo-info">
-          <h2>"{photo.alt}"</h2>
-          <div className="photographer-detail">
+        <h2>"{photo.alt}"</h2>
+        <div className="photographer-detail">
           <p>
             <strong>Photographer:</strong> {photo.photographer}
           </p>
           <p>
             <strong>Date Taken:</strong> {new Date().toLocaleDateString()}
           </p>
-          </div>
         </div>
+      </div>
       <div className="photo-detail-content">
         <img src={photo.src.large} alt={photo.alt} />
       </div>

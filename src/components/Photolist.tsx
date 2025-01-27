@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PexelsResponse, PhotoCardProps } from "../shared/interfaces/photos";
-import PhotoCard from "./PhotoCard";
+import Loading from "./Loading";
+import { useNavigate } from "react-router-dom";
+import SearchBar from "./SearchBar";
 import { fetchImages } from "../services/PhotosAPI";
 
 const Photolist = () => {
@@ -11,6 +13,7 @@ const Photolist = () => {
   const observer = useRef<IntersectionObserver | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const navigate = useNavigate();
 
   const generateColumns = () => {
     const grid: PhotoCardProps[][] = Array.from({ length: columns }, () => []);
@@ -36,31 +39,49 @@ const Photolist = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchData = useCallback(async (page: number) => {
-    setLoading(true);
-    try {
-      const response: PexelsResponse = await fetchImages(searchTerm, page);
-      setPhotos((prevPhotos) =>
-        page === 1 ? response.photos : [...prevPhotos, ...response.photos]
-      );
+  const fetchData = useCallback(
+    async (query: string, pageNumber: number) => {
+      setLoading(true);
       setErrorMsg(null);
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrorMsg(error.message);
+      try {
+        const response: PexelsResponse = await fetchImages(query, pageNumber);
+        setPhotos((prevPhotos) =>
+          page === 1 ? response.photos : [...prevPhotos, ...response.photos]
+        );
+        setErrorMsg(null);
+      } catch (error) {
+        if (error instanceof Error) {
+          setErrorMsg("'Failed to fetch photos. Please try again later.'");
+          console.error(error);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [page]
+  );
 
   useEffect(() => {
-    fetchData(page);
+    if (page === 1) {
+      fetchData(searchTerm, 1);
+    }
   }, [fetchData, page]);
 
-  const handleSearch = useCallback(() => {
-    setPage(1);
-    fetchImages(searchTerm, 1);
-  }, [searchTerm]);
+  useEffect(() => {
+    if (page > 1) {
+      fetchData(searchTerm, page);
+    }
+  }, [page, fetchData]);
+
+  const handleSearch = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      setPhotos([]);
+      setPage(1);
+      fetchData(searchTerm, page);
+    },
+    [page, searchTerm]
+  );
 
   const lastPhotoRef = useCallback(
     (node: HTMLDivElement) => {
@@ -76,20 +97,45 @@ const Photolist = () => {
     [isLoading]
   );
 
+  const handlePhotoClick = useCallback(
+    (photoId: number) => {
+      navigate(`/photo/${photoId}`, { state: { searchTerm } });
+    },
+    [navigate, searchTerm]
+  );
+
+  const skeletonList = useMemo(() => {
+    return Array.from({ length: 20 }).map((_, index) => (
+      <div key={index} className="skeleton-item" />
+    ));
+  }, []);
+
   const photoList = useMemo(() => {
     return gridColumns.map((column, colIndex) => (
       <div key={colIndex} className="masonry-column">
         {column.map((photo, index) => (
           <div
-            key={photo.id}
+            key={photo.id + photo.alt + index}
             ref={index === column.length - 1 ? lastPhotoRef : null}
+            className="photo-card"
+            onClick={() => handlePhotoClick(photo.id)}
           >
-            <PhotoCard photo={photo} />
+            <img
+              loading="lazy"
+              src={photo.src.large}
+              srcSet={`${photo.src.medium} 1x, ${photo.src.large} 2x`}
+              alt={photo.alt}
+              onLoad={(e) => (e.currentTarget.style.opacity = "1")}
+              style={{
+                opacity: 0,
+                transition: "opacity 0.3s ease-in-out",
+              }}
+            />
           </div>
         ))}
       </div>
     ));
-  }, [gridColumns, lastPhotoRef]);
+  }, [gridColumns, handlePhotoClick, lastPhotoRef]);
 
   if (errorMsg) {
     return <div>Error: {errorMsg}</div>;
@@ -97,17 +143,17 @@ const Photolist = () => {
 
   return (
     <div className="masonry-layout">
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search images..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
+      <SearchBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        handleSearch={handleSearch}
+      />
+      <div className="masonry-grid">
+        {" "}
+        {isLoading && page === 1 ? skeletonList : photoList}
       </div>
-      <div className="masonry-grid">{photoList}</div>
-      {isLoading && page > 1 && <p>Loading more images...</p>}
+      {isLoading && page > 1 && <Loading />}
+      {!isLoading && photos.length === 0 && <h2> No result Found...</h2>}
     </div>
   );
 };
